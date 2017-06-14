@@ -19,8 +19,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
      */
     public static function findIdentity($id)
     {
-        $user = User::find($id);
-        return isset($user) ? new static(User::find($id)) : null;
+        return isset(self::$users[$id]) ? new static(self::$users[$id]) : null;
     }
 
     /**
@@ -28,7 +27,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        foreach (User::find()->asArray()->all() as $user) {
+        foreach (self::$users as $user) {
             if ($user['accessToken'] === $token) {
                 return new static($user);
             }
@@ -45,7 +44,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
      */
     public static function findByUsername($username)
     {
-        foreach (User::find()->asArray()->all() as $user) {
+        foreach (self::$users as $user) {
             if (strcasecmp($user['username'], $username) === 0) {
                 return new static($user);
             }
